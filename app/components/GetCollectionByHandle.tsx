@@ -59,7 +59,7 @@ const GET_COLLECTION_BY_HANDLE_QUERY = `
       image {
         url
       }
-      products(first: 20) {
+      products(first: 250) {
         nodes {
           id
           title
@@ -266,7 +266,7 @@ export function CollectionByHandle({
     );
   }
 
-  const displayTitle = title || collection?.title;
+  const displayTitle =collection?.title;
   const products = filteredProducts?.slice(0, limit);
 
   // Map columnSize to actual Tailwind classes

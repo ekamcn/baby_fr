@@ -1,16 +1,16 @@
-import { type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import { Await, useLoaderData, Link, type MetaFunction } from 'react-router';
-import { Suspense } from 'react';
-import { Image, Money } from '@shopify/hydrogen';
+import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {Await, useLoaderData, Link, type MetaFunction} from 'react-router';
+import {Suspense} from 'react';
+import {Image, Money} from '@shopify/hydrogen';
 import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
-import { ProductItem } from '~/components/ProductItem';
-import { ImageBanner } from '~/components/ImageBanner';
-import { AllProductsWidget } from '~/components/AllProductsWidget';
-import { AllCollectionsWidgetSimple } from '~/components/AllCollections';
-import { CollectionByHandle } from '~/components/GetCollectionByHandle';
+import {ProductItem} from '~/components/ProductItem';
+import {ImageBanner} from '~/components/ImageBanner';
+import {AllProductsWidget} from '~/components/AllProductsWidget';
+import {AllCollectionsWidgetSimple} from '~/components/AllCollections';
+import {CollectionByHandle} from '~/components/GetCollectionByHandle';
 import FaqSection from '~/components/FaqSection';
 
 const sections = [
@@ -22,15 +22,17 @@ const sections = [
         answer: (
           <div className="flex flex-col gap-4">
             <p>
-              <strong>ATTENTION :</strong> Merci de lire attentivement notre FAQ avant de nous contacter.
+              <strong>ATTENTION :</strong> Merci de lire attentivement notre FAQ
+              avant de nous contacter.
             </p>
             <p>
-              Si vous ne trouvez pas la réponse à votre question, merci de nous envoyer un e-mail à{' '}
+              Si vous ne trouvez pas la réponse à votre question, merci de nous
+              envoyer un e-mail à{' '}
               <a
-                href="mailto:contact@refletjardin.com"
-                className="hover:text-blue-300 transition-colors !text-[var(--color-1)] underline underline-offset-4"
+                href={`mailto:${import.meta.env.VITE_CUSTOMER_SUPPORT_EMAIL}`}
+                className="hover:text-blue-300 transition-colors !text-[var(--color-footer)] underline underline-offset-4"
               >
-                contact@refletjardin.com
+                {import.meta.env.VITE_CUSTOMER_SUPPORT_EMAIL}
               </a>
             </p>
           </div>
@@ -41,10 +43,12 @@ const sections = [
         answer: (
           <div className="flex flex-col gap-4">
             <p>
-              Nous acceptons divers modes de paiement, notamment Visa, MasterCard, American Express.
+              Nous acceptons divers modes de paiement, notamment Visa,
+              MasterCard, American Express.
             </p>
             <p>
-              Toutes les transactions sont sécurisées et cryptées pour votre tranquillité d&apos;esprit.
+              Toutes les transactions sont sécurisées et cryptées pour votre
+              tranquillité d&apos;esprit.
             </p>
           </div>
         ),
@@ -54,10 +58,12 @@ const sections = [
         answer: (
           <div className="flex flex-col gap-4">
             <p>
-              Une fois votre commande expédiée, vous recevrez un e-mail de confirmation contenant un numéro de suivi.
+              Une fois votre commande expédiée, vous recevrez un e-mail de
+              confirmation contenant un numéro de suivi.
             </p>
             <p>
-              Ce numéro vous permet de suivre votre colis en temps réel sur notre site ou sur le site du transporteur.
+              Ce numéro vous permet de suivre votre colis en temps réel sur
+              notre site ou sur le site du transporteur.
             </p>
           </div>
         ),
@@ -67,10 +73,14 @@ const sections = [
         answer: (
           <div className="flex flex-col gap-4">
             <p>
-              Nous offrons une politique de retour flexible. Si vous n&apos;êtes pas satisfait de votre achat, veuillez nous contacter dans les 30 jours suivant la réception de votre commande pour organiser un retour ou un échange.
+              Nous offrons une politique de retour flexible. Si vous n&apos;êtes
+              pas satisfait de votre achat, veuillez nous contacter dans les 30
+              jours suivant la réception de votre commande pour organiser un
+              retour ou un échange.
             </p>
             <p>
-              Consultez notre page sur la politique de retour pour plus d&apos;informations.
+              Consultez notre page sur la politique de retour pour plus
+              d&apos;informations.
             </p>
           </div>
         ),
@@ -80,7 +90,7 @@ const sections = [
 ];
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Hydrogen | Home' }];
+  return [{title: 'Hydrogen | Home'}];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -90,15 +100,15 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return { ...deferredData, ...criticalData };
+  return {...deferredData, ...criticalData};
 }
 
 /**
-* Load data necessary for rendering content above the fold. This is the critical data
-* needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
-*/
-async function loadCriticalData({ context }: LoaderFunctionArgs) {
-  const [{ collections }] = await Promise.all([
+ * Load data necessary for rendering content above the fold. This is the critical data
+ * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
+ */
+async function loadCriticalData({context}: LoaderFunctionArgs) {
+  const [{collections}] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     // Add other queries here, so that they are loaded in parallel
   ]);
@@ -109,11 +119,11 @@ async function loadCriticalData({ context }: LoaderFunctionArgs) {
 }
 
 /**
-* Load data for rendering content below the fold. This data is deferred and will be
-* fetched after the initial page load. If it's unavailable, the page should still 200.
-* Make sure to not throw any errors here, as it will cause the page to 500.
-*/
-function loadDeferredData({ context }: LoaderFunctionArgs) {
+ * Load data for rendering content below the fold. This data is deferred and will be
+ * fetched after the initial page load. If it's unavailable, the page should still 200.
+ * Make sure to not throw any errors here, as it will cause the page to 500.
+ */
+function loadDeferredData({context}: LoaderFunctionArgs) {
   const recommendedProducts = context.storefront
     .query(RECOMMENDED_PRODUCTS_QUERY)
     .catch((error) => {
@@ -135,15 +145,16 @@ export default function Homepage() {
         title="Cosy Critters3 "
         imageUrl={import.meta.env.VITE_BANNER}
         mobileImageUrl={import.meta.env.VITE_MOBILE_BANNER}
-        subtitle="Bienvenue chez Esprit Auto Moto, la boutique en ligne pensée par des passionnés, pour des passionnés."
-        description="Que vous rouliez en voiture ou en deux-roues, que vous soyez amateur de tuning, adepte de sensations fortes ou simplement soucieux de bien entretenir votre véhicule, Esprit Auto Moto est là pour vous équiper avec style, efficacité et performance."
+        subtitle={`Chez ${import.meta.env.VITE_STORE_TITLE}, notre mission est simple.`}
+        description={`Accompagner les parents dans les plus beaux moments de la vie en leur proposant des produits pratiques, doux, et surtout pensés pour le bien-être de leur bébé.
+        Nous savons à quel point l’arrivée d’un enfant bouleverse une vie. Entre amour, fatigue, émerveillement et inquiétudes, chaque jour compte. C’est pourquoi nous avons créé ${import.meta.env.VITE_STORE_TITLE} : une boutique en ligne où vous trouverez des articles soigneusement sélectionnés, adaptés aux besoins des tout-petits comme à ceux de leurs parents.`}
         buttonText="Shop Now"
         buttonUrl=""
       />
 
       <CollectionByHandle
         handle="offre-flash"
-        title="offer flash"
+        // title="offer flash"
         limit={6}
         columnSize="6"
         badgeText="Offre Flash"
@@ -155,7 +166,7 @@ export default function Homepage() {
 
       <CollectionByHandle
         handle="derniere-chance"
-        title="derniere chance"
+        // title="derniere chance"
         limit={20}
         columnSize="4"
         badgeText="DERNIÈRE CHANCE"
@@ -171,7 +182,7 @@ export default function Homepage() {
 
       <CollectionByHandle
         handle="tout-a-moins-de-20"
-        title="TOUT À MOINS DE 20€"
+        // title="TOUT À MOINS DE 20€"
         limit={20}
         columnSize="5"
         showTitle={true}
@@ -180,7 +191,13 @@ export default function Homepage() {
         className="featured-collection"
       />
 
-      <FaqSection sections={sections} showNewsletter rounded heading='emails' description='Soyez les premiers à être informés des nouvelles collections et des offres exclusives.'/>
+      <FaqSection
+        sections={sections}
+        showNewsletter
+        rounded
+        heading="emails"
+        description="Soyez les premiers à être informés des nouvelles collections et des offres exclusives."
+      />
 
       {/* <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} /> */}
@@ -224,8 +241,8 @@ function RecommendedProducts({
             <div className="recommended-products-grid">
               {response
                 ? response.products.nodes.map((product) => (
-                  <ProductItem key={product.id} product={product} />
-                ))
+                    <ProductItem key={product.id} product={product} />
+                  ))
                 : null}
             </div>
           )}
@@ -287,4 +304,3 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
     }
   }
 ` as const;
-
