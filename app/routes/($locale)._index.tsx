@@ -8,6 +8,86 @@ import type {
 } from 'storefrontapi.generated';
 import {ProductItem} from '~/components/ProductItem';
 import {ImageBanner} from '~/components/ImageBanner';
+import {AllProductsWidget} from '~/components/AllProductsWidget';
+import {AllCollectionsWidgetSimple} from '~/components/AllCollections';
+import {CollectionByHandle} from '~/components/GetCollectionByHandle';
+import FaqSection from '~/components/FaqSection';
+
+const sections = [
+  {
+    title: 'Foires Aux Questions',
+    faqs: [
+      {
+        question: 'A lire avant de nous contacter',
+        answer: (
+          <div className="flex flex-col gap-4">
+            <p>
+              <strong>ATTENTION :</strong> Merci de lire attentivement notre FAQ
+              avant de nous contacter.
+            </p>
+            <p>
+              Si vous ne trouvez pas la réponse à votre question, merci de nous
+              envoyer un e-mail à{' '}
+              <a
+                href={`mailto:${import.meta.env.VITE_CUSTOMER_SUPPORT_EMAIL}`}
+                className="hover:text-blue-300 transition-colors !text-[var(--color-footer)] underline underline-offset-4"
+              >
+                {import.meta.env.VITE_CUSTOMER_SUPPORT_EMAIL}
+              </a>
+            </p>
+          </div>
+        ),
+      },
+      {
+        question: 'Quels sont les modes de paiement acceptés ?',
+        answer: (
+          <div className="flex flex-col gap-4">
+            <p>
+              Nous acceptons divers modes de paiement, notamment Visa,
+              MasterCard, American Express.
+            </p>
+            <p>
+              Toutes les transactions sont sécurisées et cryptées pour votre
+              tranquillité d&apos;esprit.
+            </p>
+          </div>
+        ),
+      },
+      {
+        question: 'Comment suivre ma commande ?',
+        answer: (
+          <div className="flex flex-col gap-4">
+            <p>
+              Une fois votre commande expédiée, vous recevrez un e-mail de
+              confirmation contenant un numéro de suivi.
+            </p>
+            <p>
+              Ce numéro vous permet de suivre votre colis en temps réel sur
+              notre site ou sur le site du transporteur.
+            </p>
+          </div>
+        ),
+      },
+      {
+        question: 'Quelle est votre politique de retour ?',
+        answer: (
+          <div className="flex flex-col gap-4">
+            <p>
+              Nous offrons une politique de retour flexible. Si vous n&apos;êtes
+              pas satisfait de votre achat, veuillez nous contacter dans les 30
+              jours suivant la réception de votre commande pour organiser un
+              retour ou un échange.
+            </p>
+            <p>
+              Consultez notre page sur la politique de retour pour plus
+              d&apos;informations.
+            </p>
+          </div>
+        ),
+      },
+    ],
+  },
+];
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -61,16 +141,66 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
-      <ImageBanner 
-        title="Deco Bay"
-        imageUrl = {`${import.meta.env.VITE_BANNER}`}
-        subtitle="Welcome to Deco Bay, a proudly American brand committed to transforming your home with style, quality, and unbeatable value."
-        description="Founded by a team of passionate home decor enthusiasts, our mission is simple: to make your living space more beautiful, more functional, and above all — more accessible for everyone."
+      <ImageBanner
+        title="Cosy Critters3 "
+        imageUrl={import.meta.env.VITE_BANNER}
+        mobileImageUrl={import.meta.env.VITE_MOBILE_BANNER}
+        subtitle={`Chez ${import.meta.env.VITE_STORE_TITLE}, notre mission est simple.`}
+        description={`Accompagner les parents dans les plus beaux moments de la vie en leur proposant des produits pratiques, doux, et surtout pensés pour le bien-être de leur bébé.
+        Nous savons à quel point l’arrivée d’un enfant bouleverse une vie. Entre amour, fatigue, émerveillement et inquiétudes, chaque jour compte. C’est pourquoi nous avons créé ${import.meta.env.VITE_STORE_TITLE} : une boutique en ligne où vous trouverez des articles soigneusement sélectionnés, adaptés aux besoins des tout-petits comme à ceux de leurs parents.`}
         buttonText="Shop Now"
         buttonUrl=""
       />
-      <FeaturedCollection collection={data.featuredCollection} />
-      <RecommendedProducts products={data.recommendedProducts} />
+
+      <CollectionByHandle
+        handle="offre-flash"
+        // title="offer flash"
+        limit={6}
+        columnSize="6"
+        badgeText="Offre Flash"
+        showTitle={false}
+        showDescription={false}
+        className="featured-collection pt-5"
+        forceSmallCols2={true}
+      />
+
+      <CollectionByHandle
+        handle="derniere-chance"
+        // title="derniere chance"
+        limit={20}
+        columnSize="4"
+        badgeText="DERNIÈRE CHANCE"
+        badgeLogo
+        showTitle={true}
+        showDescription={false}
+        className="featured-collection"
+        forceSmallCols2={true}
+      />
+
+      <AllCollectionsWidgetSimple />
+      {/* <AllProductsWidget limit={8} /> */}
+
+      <CollectionByHandle
+        handle="tout-a-moins-de-20"
+        // title="TOUT À MOINS DE 20€"
+        limit={20}
+        columnSize="5"
+        showTitle={true}
+        badgeText=""
+        showDescription={false}
+        className="featured-collection"
+      />
+
+      <FaqSection
+        sections={sections}
+        showNewsletter
+        rounded
+        heading="emails"
+        description="Soyez les premiers à être informés des nouvelles collections et des offres exclusives."
+      />
+
+      {/* <FeaturedCollection collection={data.featuredCollection} />
+      <RecommendedProducts products={data.recommendedProducts} /> */}
     </div>
   );
 }
@@ -165,7 +295,7 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
       height
     }
   }
-  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
+  query RecommendedProductsPage ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
     products(first: 4, sortKey: UPDATED_AT, reverse: true) {
       nodes {
